@@ -1,0 +1,50 @@
+<div class="container">
+    <h1 class="text-center mt-4">Agendamento de Transferências</h1>
+
+    <!-- Formulário -->
+    <form (submit)="agendarTransferencia()">
+      <div class="mb-3">
+        <label class="form-label">Conta de Origem:</label>
+        <input [(ngModel)]="novaTransferencia.contaOrigem" name="contaOrigem" class="form-control" required placeholder="XXXXXXXXXX">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Conta de Destino:</label>
+        <input [(ngModel)]="novaTransferencia.contaDestino" name="contaDestino" class="form-control" required placeholder="XXXXXXXXXX">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Valor:</label>
+        <input [(ngModel)]="novaTransferencia.valor" name="valor" type="number" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Data da Transferência:</label>
+        <input [(ngModel)]="novaTransferencia.dataTransferencia" name="dataTransferencia" type="date" class="form-control" required>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Agendar Transferência</button>
+    </form>
+
+
+  <!-- Lista de Transferências -->
+  <h2 class="mt-4">Extrato de Transferências</h2>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Conta Origem</th>
+      <th>Conta Destino</th>
+      <th>Valor</th>
+      <th>Taxa</th>
+      <th>Data Transferência</th>
+      <th>Data Agendamento</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let trans of transferencias">
+      <td>{{ trans.contaOrigem }}</td>
+      <td>{{ trans.contaDestino }}</td>
+      <td>R$ {{ trans.valor.toFixed(2) }}</td>
+      <td>R$ {{ trans.taxa.toFixed(2) }}</td>
+      <td>{{ trans.dataTransferencia }}</td>
+      <td>{{ trans.dataAgendamento }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
