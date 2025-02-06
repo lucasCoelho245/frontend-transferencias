@@ -1,59 +1,86 @@
-# FrontendTransferencias
+# Transferências Financeiras - Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.5.
+Este projeto é a interface web para o sistema de agendamento de transferências financeiras, desenvolvido com **Angular 19**. Ele permite que o usuário realize agendamentos de transferências, visualize um extrato completo e receba feedback em tempo real sobre possíveis erros nas transações.
 
-## Development server
+## 📌 Tecnologias Utilizadas
 
-To start a local development server, run:
+- **Angular 19**
+- **TypeScript**
+- **Bootstrap 5** (para estilização)
+- **SCSS** (para aprimoramento visual)
+- **RxJS** (para manipulação de chamadas assíncronas)
+- **Date-fns** (para manipulação de datas)
+- **Angular Reactive Forms** (para validação de formulários)
 
-```bash
-ng serve
-```
+## ⚙️ Instalação e Execução
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+1. **Clone este repositório**
+   ```bash
+   git clone https://github.com/seu-usuario/frontend-transferencias.git
+   ```
 
-## Code scaffolding
+2. **Acesse a pasta do projeto**
+   ```bash
+   cd frontend-transferencias
+   ```
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+3. **Instale as dependências**
+   ```bash
+   npm install
+   ```
 
-```bash
-ng generate component component-name
-```
+4. **Inicie o servidor Angular**
+   ```bash
+   npm run start
+   ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+5. **Acesse no navegador**
+   ```
+   http://localhost:4200
+   ```
 
-```bash
-ng generate --help
-```
+## 🛠️ Funcionalidades
 
-## Building
+✅ **Cadastro de Transferências**: Permite agendar transferências preenchendo **conta de origem**, **conta de destino**, **valor**, **taxa** e **datas**.  
+✅ **Validações Inteligentes**: O sistema bloqueia valores inválidos, datas incorretas e exibe mensagens de erro claras.  
+✅ **Máscaras e Formatação Automática**: O sistema impede caracteres inválidos e garante que os inputs sigam os padrões corretos.  
+✅ **Preenchimento Automático**: Para facilitar testes, há um botão para preencher o formulário com valores de exemplo.  
+✅ **Exibição de Extrato**: O usuário pode visualizar todas as transferências cadastradas de forma clara e organizada.  
+✅ **Comunicação com o Backend**: A interface faz requisições HTTP para a API, garantindo que os dados estejam sincronizados.
 
-To build the project run:
+## 🌟 Layout e Design
 
-```bash
-ng build
-```
+O projeto foi desenvolvido utilizando **Bootstrap 5** e **SCSS**, proporcionando uma interface responsiva e agradável ao usuário. O formulário é intuitivo, com mensagens de erro bem definidas, e a tabela de extrato é estilizada para melhor visualização.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 🔗 API Backend
 
-## Running unit tests
+O frontend se comunica com a API backend desenvolvida em **Java Spring Boot**. Para garantir a funcionalidade completa, certifique-se de que o backend esteja rodando corretamente.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+- **Endpoint da API:** `http://localhost:8081/transferencias`
+- **Métodos disponíveis:**
+  - `GET /transferencias` → Retorna a lista de transferências cadastradas.
+  - `POST /transferencias` → Realiza um novo agendamento de transferência.
 
-```bash
-ng test
-```
+## 🚀 Como Testar
 
-## Running end-to-end tests
+Para garantir que o sistema esteja funcionando corretamente, siga estas etapas:
 
-For end-to-end (e2e) testing, run:
+1. **Teste de cadastro de transferência**
+  - Tente criar uma transferência com dados válidos e verifique se ela aparece no extrato.
+  - Utilize o botão de preenchimento automático para facilitar os testes.
 
-```bash
-ng e2e
-```
+2. **Teste de validações**
+  - Insira **contas com menos de 10 dígitos** ou **caracteres não numéricos** e veja se o erro aparece.
+  - Digite **datas fora do limite permitido** (acima de 50 dias) e confira a mensagem de erro.
+  - Teste **valores negativos ou zerados** para verificar a validação.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+3. **Teste de comunicação com o backend**
+  - Confirme que a API backend está rodando (`http://localhost:8081/transferencias`).
+  - Verifique no **Postman** se as requisições `GET` e `POST` funcionam corretamente.
 
-## Additional Resources
+## 🐝 Licença
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Este projeto foi desenvolvido para fins de avaliação técnica. Todos os direitos reservados.
+
+---
+💡 **Dica**: Certifique-se de configurar corretamente o backend antes de testar o frontend!
