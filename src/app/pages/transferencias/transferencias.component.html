@@ -1,50 +1,89 @@
-<div class="container">
-    <h1 class="text-center mt-4">Agendamento de Transferências</h1>
+<div class="container mt-4">
+  <h2 class="text-center mb-4">💰 Agendamento de Transferências</h2>
 
-    <!-- Formulário -->
-    <form (submit)="agendarTransferencia()">
-      <div class="mb-3">
-        <label class="form-label">Conta de Origem:</label>
-        <input [(ngModel)]="novaTransferencia.contaOrigem" name="contaOrigem" class="form-control" required placeholder="XXXXXXXXXX">
+  <div class="card">
+    <h4><i class="fas fa-file-invoice-dollar"></i> Preencha os dados</h4>
+
+    <form [formGroup]="transferenciaForm" (ngSubmit)="agendarTransferencia()">
+      <div class="row">
+        <!-- Conta Origem -->
+        <div class="form-group">
+          <label for="contaOrigem">Conta Origem:</label>
+          <input id="contaOrigem" type="text" class="form-control" formControlName="contaOrigem" maxlength="10" (input)="filtrarNumeros($event)">
+          <small *ngIf="getControl('contaOrigem')?.invalid && getControl('contaOrigem')?.touched" class="error-message">
+            Conta deve conter exatamente 10 dígitos numéricos.
+          </small>
+        </div>
+
+        <!-- Conta Destino -->
+        <div class="form-group">
+          <label for="contaDestino">Conta Destino:</label>
+          <input id="contaDestino" type="text" class="form-control" formControlName="contaDestino" maxlength="10" (input)="filtrarNumeros($event)">
+          <small *ngIf="getControl('contaDestino')?.invalid && getControl('contaDestino')?.touched" class="error-message">
+            Conta deve conter exatamente 10 dígitos numéricos.
+          </small>
+        </div>
+
+        <!-- Valor -->
+        <div class="form-group">
+          <label for="valor">Valor:</label>
+          <input id="valor" type="number" class="form-control" formControlName="valor" min="1">
+          <small *ngIf="getControl('valor')?.invalid && getControl('valor')?.touched" class="error-message">
+            O valor deve ser maior que zero.
+          </small>
+        </div>
+
+        <!-- Data de Transferência -->
+        <div class="form-group">
+          <label for="dataTransferencia">Data de Transferência:</label>
+          <input id="dataTransferencia" type="date" class="form-control" formControlName="dataTransferencia">
+          <small *ngIf="getControl('dataTransferencia')?.invalid && getControl('dataTransferencia')?.touched" class="error-message">
+            Selecione uma data válida (máximo permitido: 50 dias no futuro).
+          </small>
+        </div>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Conta de Destino:</label>
-        <input [(ngModel)]="novaTransferencia.contaDestino" name="contaDestino" class="form-control" required placeholder="XXXXXXXXXX">
+
+      <!-- Botões -->
+      <div class="button-container">
+        <button type="submit" class="btn-custom" [disabled]="transferenciaForm.invalid">
+          <i class="fas fa-money-check-alt"></i> Agendar Transferência
+        </button>
+
+        <button type="button" class="btn-fill-form" (click)="preencherFormulario()">
+          <i class="fas fa-magic"></i> Preencher Dados
+        </button>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Valor:</label>
-        <input [(ngModel)]="novaTransferencia.valor" name="valor" type="number" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Data da Transferência:</label>
-        <input [(ngModel)]="novaTransferencia.dataTransferencia" name="dataTransferencia" type="date" class="form-control" required>
-      </div>
-      <button type="submit" class="btn btn-primary w-100">Agendar Transferência</button>
     </form>
+  </div>
 
+  <hr class="my-5">
 
-  <!-- Lista de Transferências -->
-  <h2 class="mt-4">Extrato de Transferências</h2>
-  <table class="table table-striped">
-    <thead>
-    <tr>
-      <th>Conta Origem</th>
-      <th>Conta Destino</th>
-      <th>Valor</th>
-      <th>Taxa</th>
-      <th>Data Transferência</th>
-      <th>Data Agendamento</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let trans of transferencias">
-      <td>{{ trans.contaOrigem }}</td>
-      <td>{{ trans.contaDestino }}</td>
-      <td>R$ {{ trans.valor.toFixed(2) }}</td>
-      <td>R$ {{ trans.taxa.toFixed(2) }}</td>
-      <td>{{ trans.dataTransferencia }}</td>
-      <td>{{ trans.dataAgendamento }}</td>
-    </tr>
-    </tbody>
-  </table>
+  <!-- Extrato de Transferências -->
+  <div class="card shadow-sm p-4 rounded-4">
+    <h4 class="mb-3">📜 Extrato de Transferências</h4>
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered rounded-4 overflow-hidden">
+        <thead class="table-dark">
+        <tr>
+          <th>Conta Origem</th>
+          <th>Conta Destino</th>
+          <th>Valor</th>
+          <th>Taxa</th>
+          <th>Data Transferência</th>
+          <th>Data Agendamento</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let transferencia of transferencias">
+          <td>{{ transferencia.contaOrigem }}</td>
+          <td>{{ transferencia.contaDestino }}</td>
+          <td>R$ {{ transferencia.valor | number:'1.2-2' }}</td>
+          <td>R$ {{ transferencia.taxa | number:'1.2-2' }}</td>
+          <td>{{ transferencia.dataTransferencia }}</td>
+          <td>{{ transferencia.dataAgendamento }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
