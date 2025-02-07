@@ -1,49 +1,59 @@
 <div class="container mt-4">
-  <h2 class="text-center mb-4">💰 Agendamento de Transferências</h2>
+  <h2 class="text-center mb-4">Agendamento de Transferências</h2>
 
   <div class="card">
     <h4><i class="fas fa-file-invoice-dollar"></i> Preencha os dados</h4>
 
     <form [formGroup]="transferenciaForm" (ngSubmit)="agendarTransferencia()">
       <div class="row">
-        <!-- Conta Origem -->
         <div class="form-group">
           <label for="contaOrigem">Conta Origem:</label>
           <input id="contaOrigem" type="text" class="form-control" formControlName="contaOrigem" maxlength="10" (input)="filtrarNumeros($event)">
           <small *ngIf="getControl('contaOrigem')?.invalid && getControl('contaOrigem')?.touched" class="error-message">
-            Conta deve conter exatamente 10 dígitos numéricos.
+            ⚠️ Conta de origem deve conter exatamente 10 dígitos numéricos.
           </small>
         </div>
 
-        <!-- Conta Destino -->
         <div class="form-group">
           <label for="contaDestino">Conta Destino:</label>
           <input id="contaDestino" type="text" class="form-control" formControlName="contaDestino" maxlength="10" (input)="filtrarNumeros($event)">
           <small *ngIf="getControl('contaDestino')?.invalid && getControl('contaDestino')?.touched" class="error-message">
-            Conta deve conter exatamente 10 dígitos numéricos.
+            ⚠️ Conta de destino deve conter exatamente 10 dígitos numéricos.
           </small>
         </div>
 
-        <!-- Valor -->
         <div class="form-group">
           <label for="valor">Valor:</label>
           <input id="valor" type="number" class="form-control" formControlName="valor" min="1">
-          <small *ngIf="getControl('valor')?.invalid && getControl('valor')?.touched" class="error-message">
-            O valor deve ser maior que zero.
+          <small *ngIf="getControl('valor')?.errors?.['min']" class="error-message">
+            ⚠️ O valor da transferência deve ser maior que zero.
+          </small>
+          <small *ngIf="getControl('valor')?.errors?.['max']" class="error-message">
+            ⚠️ O valor da transferência excede o limite permitido.
+          </small>
+          <small *ngIf="getControl('valor')?.errors?.['pattern']" class="error-message">
+            ⚠️ O valor deve ser um número inteiro válido.
           </small>
         </div>
 
-        <!-- Data de Transferência -->
         <div class="form-group">
           <label for="dataTransferencia">Data de Transferência:</label>
           <input id="dataTransferencia" type="date" class="form-control" formControlName="dataTransferencia">
-          <small *ngIf="getControl('dataTransferencia')?.invalid && getControl('dataTransferencia')?.touched" class="error-message">
-            Selecione uma data válida (máximo permitido: 50 dias no futuro).
+          <small *ngIf="getControl('dataTransferencia')?.errors?.['dataPassada']" class="error-message">
+            ⚠️ Data inválida. Escolha uma data futura.
+          </small>
+          <small *ngIf="getControl('dataTransferencia')?.errors?.['dataMuitoDistante']" class="error-message">
+            ⚠️ A data de transferência não pode exceder **50 dias no futuro**.
+          </small>
+          <small *ngIf="getControl('dataTransferencia')?.errors?.['anoInvalido']" class="error-message">
+            ⚠️ Ano inválido. Insira uma data entre **2020 e 2100**.
+          </small>
+          <small *ngIf="erroTaxaInaplicavel" class="error-message">
+            ❌ Nenhuma taxa aplicável para essa transferência. **Por favor, selecione uma data válida dentro dos prazos permitidos.**
           </small>
         </div>
       </div>
 
-      <!-- Botões -->
       <div class="button-container">
         <button type="submit" class="btn-custom" [disabled]="transferenciaForm.invalid">
           <i class="fas fa-money-check-alt"></i> Agendar Transferência
@@ -58,7 +68,7 @@
 
   <hr class="my-5">
 
-  <!-- Extrato de Transferências -->
+  <!-- 📜 Extrato de Transferências -->
   <div class="card shadow-sm p-4 rounded-4">
     <h4 class="mb-3">📜 Extrato de Transferências</h4>
     <div class="table-responsive">

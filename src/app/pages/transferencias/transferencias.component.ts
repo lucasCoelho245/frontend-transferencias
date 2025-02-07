@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { TransferenciaService } from '../../services/transferencia.service';
 import { Transferencia } from './transferencia.model';
-import { format, differenceInDays } from 'date-fns';
+import { format } from 'date-fns';
 
 @Component({
   selector: 'app-transferencias',
@@ -15,6 +15,7 @@ import { format, differenceInDays } from 'date-fns';
 export class TransferenciasComponent implements OnInit {
   public transferenciaForm!: FormGroup;
   public transferencias: Transferencia[] = [];
+  public erroTaxaInaplicavel: boolean = false;
 
   private service = inject(TransferenciaService);
   private fb = inject(FormBuilder);
@@ -23,12 +24,11 @@ export class TransferenciasComponent implements OnInit {
 
   ngOnInit(): void {
     this.transferenciaForm = this.fb.group({
-      contaOrigem: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
-      contaDestino: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
-      valor: [null, [Validators.required, Validators.min(1)]],
-      dataTransferencia: ['', [Validators.required, this.validarDataTransferencia]],
+      contaOrigem: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      contaDestino: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      valor: ['', [Validators.required, Validators.min(1), Validators.max(9999999), Validators.pattern(/^[0-9]+$/)]],
+      dataTransferencia: ['', [Validators.required, this.validarData.bind(this)]],
     });
-
     this.carregarTransferencias();
   }
 
@@ -44,18 +44,19 @@ export class TransferenciasComponent implements OnInit {
       return;
     }
 
-    const dataSelecionada = this.transferenciaForm.get('dataTransferencia')?.value;
-
-    // Convertendo a data sem alterações de fuso horário
-    const dataTransferenciaFormatada = format(new Date(dataSelecionada + 'T00:00:00'), 'yyyy-MM-dd');
+    const taxa = this.calcularTaxa();
+    if (taxa === null) {
+      this.erroTaxaInaplicavel = true;
+      return;
+    }
 
     const novaTransferencia: Transferencia = {
       id: Math.floor(Math.random() * 1000),
       contaOrigem: this.transferenciaForm.get('contaOrigem')?.value,
       contaDestino: this.transferenciaForm.get('contaDestino')?.value,
       valor: this.transferenciaForm.get('valor')?.value,
-      taxa: 12.0,
-      dataTransferencia: dataTransferenciaFormatada,
+      taxa: taxa,
+      dataTransferencia: format(new Date(this.transferenciaForm.get('dataTransferencia')?.value), 'yyyy-MM-dd'),
       dataAgendamento: format(new Date(), 'yyyy-MM-dd'),
     };
 
@@ -63,6 +64,7 @@ export class TransferenciasComponent implements OnInit {
       next: () => {
         this.carregarTransferencias();
         this.transferenciaForm.reset();
+        this.erroTaxaInaplicavel = false;
       },
       error: (err) => console.error('Erro ao criar transferência:', err),
     });
@@ -85,12 +87,25 @@ export class TransferenciasComponent implements OnInit {
     event.target.value = event.target.value.replace(/\D/g, '').slice(0, 10);
   }
 
-  private validarDataTransferencia(control: AbstractControl): { [key: string]: any } | null {
-    const dataTransferencia = new Date(control.value);
+  private validarData(control: AbstractControl): { [key: string]: any } | null {
+    const dataSelecionada = new Date(control.value);
     const hoje = new Date();
-    const maxData = new Date();
-    maxData.setDate(hoje.getDate() + 50);
+    const maxDias = new Date();
+    maxDias.setDate(hoje.getDate() + 50);
 
-    return dataTransferencia > maxData ? { dataInvalida: true } : null;
+    if (dataSelecionada < hoje) {
+      return { dataPassada: 'Taxa não aplicável: Erro - A data de transferência não pode ser anterior à data atual.' };
+    }
+    if (dataSelecionada > maxDias) {
+      return { dataMuitoDistante: 'Taxa não aplicável: Erro - A data de transferência deve ser no máximo 50 dias após a data de agendamento.' };
+    }
+    if (dataSelecionada.getFullYear() < 2020 || dataSelecionada.getFullYear() > 2100) {
+      return { anoInvalido: 'Taxa não aplicável: Erro - O ano da transferência deve estar entre 2020 e 2100.' };
+    }
+    return null;
+  }
+
+  private calcularTaxa(): number | null {
+    return 12.00;
   }
 }
