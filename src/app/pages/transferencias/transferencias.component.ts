@@ -44,30 +44,51 @@ export class TransferenciasComponent implements OnInit {
       return;
     }
 
-    const taxa = this.calcularTaxa();
-    if (taxa === null) {
-      this.erroTaxaInaplicavel = true;
-      return;
-    }
+    const dataTransferencia = new Date(this.transferenciaForm.get('dataTransferencia')?.value);
+    dataTransferencia.setMinutes(dataTransferencia.getMinutes() + dataTransferencia.getTimezoneOffset()); // Corrige fuso horário
 
     const novaTransferencia: Transferencia = {
       id: Math.floor(Math.random() * 1000),
       contaOrigem: this.transferenciaForm.get('contaOrigem')?.value,
       contaDestino: this.transferenciaForm.get('contaDestino')?.value,
       valor: this.transferenciaForm.get('valor')?.value,
-      taxa: taxa,
-      dataTransferencia: format(new Date(this.transferenciaForm.get('dataTransferencia')?.value), 'yyyy-MM-dd'),
+      taxa: 12.00, // Implementação fixa da taxa
+      dataTransferencia: format(dataTransferencia, 'yyyy-MM-dd'),
       dataAgendamento: format(new Date(), 'yyyy-MM-dd'),
     };
 
     this.service.criarTransferencia(novaTransferencia).subscribe({
       next: () => {
         this.carregarTransferencias();
-        this.transferenciaForm.reset();
-        this.erroTaxaInaplicavel = false;
+        this.resetarFormulario();
       },
       error: (err) => console.error('Erro ao criar transferência:', err),
     });
+  }
+
+  private validarData(control: AbstractControl): { [key: string]: any } | null {
+    if (!control.value) return null;
+
+    const dataSelecionada = new Date(control.value + 'T00:00:00'); // Forçando a data para UTC
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0); // Removendo a parte de horas para evitar deslocamento
+    const maxDias = new Date();
+    maxDias.setDate(hoje.getDate() + 50);
+
+    if (dataSelecionada < hoje) {
+      return { dataPassada: 'Taxa não aplicável: A data de transferência não pode ser anterior à data atual.' };
+    }
+    if (dataSelecionada > maxDias) {
+      return { dataMuitoDistante: 'Taxa não aplicável: A data de transferência deve ser no máximo 50 dias após a data de agendamento.' };
+    }
+    if (dataSelecionada.getFullYear() < 2020 || dataSelecionada.getFullYear() > 2100) {
+      return { anoInvalido: 'Taxa não aplicável: O ano da transferência deve estar entre 2020 e 2100.' };
+    }
+    return null;
+  }
+
+  public getControl(campo: string): AbstractControl | null {
+    return this.transferenciaForm.get(campo);
   }
 
   public preencherFormulario(): void {
@@ -79,33 +100,13 @@ export class TransferenciasComponent implements OnInit {
     });
   }
 
-  public getControl(campo: string): AbstractControl | null {
-    return this.transferenciaForm.get(campo);
-  }
-
   public filtrarNumeros(event: any): void {
     event.target.value = event.target.value.replace(/\D/g, '').slice(0, 10);
   }
 
-  private validarData(control: AbstractControl): { [key: string]: any } | null {
-    const dataSelecionada = new Date(control.value);
-    const hoje = new Date();
-    const maxDias = new Date();
-    maxDias.setDate(hoje.getDate() + 50);
-
-    if (dataSelecionada < hoje) {
-      return { dataPassada: 'Taxa não aplicável: Erro - A data de transferência não pode ser anterior à data atual.' };
-    }
-    if (dataSelecionada > maxDias) {
-      return { dataMuitoDistante: 'Taxa não aplicável: Erro - A data de transferência deve ser no máximo 50 dias após a data de agendamento.' };
-    }
-    if (dataSelecionada.getFullYear() < 2020 || dataSelecionada.getFullYear() > 2100) {
-      return { anoInvalido: 'Taxa não aplicável: Erro - O ano da transferência deve estar entre 2020 e 2100.' };
-    }
-    return null;
-  }
-
-  private calcularTaxa(): number | null {
-    return 12.00;
+  private resetarFormulario(): void {
+    this.transferenciaForm.reset();
+    this.transferenciaForm.markAsPristine();
+    this.transferenciaForm.markAsUntouched();
   }
 }
