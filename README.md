@@ -16,7 +16,7 @@ Este projeto é a interface web para o sistema de agendamento de transferências
 
 1. **Clone este repositório**
    ```bash
-   git clone https://github.com/seu-usuario/frontend-transferencias.git
+   git clone https://github.com/lucasCoelho245/frontend-transferencias.git
    ```
 
 2. **Acesse a pasta do projeto**
