@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class TransferenciaService {
-  private apiUrl = 'http://127.0.0.1:8081/transferencias';
+  private apiUrl = 'http://localhost:8081/transferencias';
 
   private http = inject(HttpClient);
 

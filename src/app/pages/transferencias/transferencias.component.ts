@@ -15,7 +15,6 @@ import { format } from 'date-fns';
 export class TransferenciasComponent implements OnInit {
   public transferenciaForm!: FormGroup;
   public transferencias: Transferencia[] = [];
-  public erroTaxaInaplicavel: boolean = false;
 
   private service = inject(TransferenciaService);
   private fb = inject(FormBuilder);
@@ -45,7 +44,7 @@ export class TransferenciasComponent implements OnInit {
     }
 
     const dataTransferencia = new Date(this.transferenciaForm.get('dataTransferencia')?.value);
-    dataTransferencia.setMinutes(dataTransferencia.getMinutes() + dataTransferencia.getTimezoneOffset()); // Corrige fuso horário
+    dataTransferencia.setMinutes(dataTransferencia.getMinutes() + dataTransferencia.getTimezoneOffset());
 
     const novaTransferencia: Transferencia = {
       id: Math.floor(Math.random() * 1000),
