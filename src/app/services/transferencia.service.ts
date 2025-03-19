@@ -16,8 +16,6 @@ export class TransferenciaService {
       this.apiUrl = isVercel
         ? 'https://indirect-patty-lucascoelho-4d01551b.koyeb.app/transferencias'
         : 'http://localhost:8081/transferencias';
-      console.log('Ambiente de Produção: Vercel');
-
     } else {
       this.apiUrl = 'http://localhost:8081/transferencias';
     }

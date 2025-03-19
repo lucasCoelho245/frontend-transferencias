@@ -46,7 +46,9 @@ Este projeto é a interface web para o sistema de agendamento de transferências
 ✅ **Máscaras e Formatação Automática**: O sistema impede caracteres inválidos e garante que os inputs sigam os padrões corretos.  
 ✅ **Preenchimento Automático**: Para facilitar testes, há um botão para preencher o formulário com valores de exemplo.  
 ✅ **Exibição de Extrato**: O usuário pode visualizar todas as transferências cadastradas de forma clara e organizada.  
-✅ **Comunicação com o Backend**: A interface faz requisições HTTP para a API, garantindo que os dados estejam sincronizados.
+✅ **Comunicação com o Backend**: A interface faz requisições HTTP para a API, garantindo que os dados estejam sincronizados.  
+✅ **Botao de Delete**: Para melhor controle dos registros, há um botão com capacidade de deletar o resgistro escolhido.
+
 
 ## 🌟 Layout e Design
 
