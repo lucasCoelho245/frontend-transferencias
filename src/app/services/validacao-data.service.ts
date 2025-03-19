@@ -7,7 +7,7 @@ import {Injectable} from '@angular/core';
 export class ValidacaoDataService {
 
   public validarData(control: AbstractControl): { [key: string]: any } | null {
-    if (!control.value) return null; // Caso não haja valor
+    if (!control.value) return null;
 
     const dataSelecionada = new Date(control.value + 'T00:00:00');
     const hoje = this.obterHojeSemHora();

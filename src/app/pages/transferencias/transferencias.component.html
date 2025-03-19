@@ -6,22 +6,27 @@
 
     <form [formGroup]="transferenciaForm" (ngSubmit)="agendarTransferencia()">
       <div class="row">
+        <!-- Conta de Origem -->
         <div class="form-group">
           <label for="contaOrigem">Conta Origem:</label>
           <input id="contaOrigem" type="text" class="form-control" formControlName="contaOrigem" maxlength="10" (input)="filtrarNumeros($event)">
           <small *ngIf="getControl('contaOrigem')?.invalid && getControl('contaOrigem')?.touched" class="error-message">
             Conta deve conter exatamente 10 dígitos numéricos.
           </small>
+          <small class="form-text text-muted">Informe a conta de origem (10 dígitos).</small>
         </div>
 
+        <!-- Conta de Destino -->
         <div class="form-group">
           <label for="contaDestino">Conta Destino:</label>
           <input id="contaDestino" type="text" class="form-control" formControlName="contaDestino" maxlength="10" (input)="filtrarNumeros($event)">
           <small *ngIf="getControl('contaDestino')?.invalid && getControl('contaDestino')?.touched" class="error-message">
             Conta deve conter exatamente 10 dígitos numéricos.
           </small>
+          <small class="form-text text-muted">Informe a conta de destino (10 dígitos).</small>
         </div>
 
+        <!-- Valor da Transferência -->
         <div class="form-group">
           <label for="valor">Valor:</label>
           <input id="valor" type="number" class="form-control" formControlName="valor" min="1">
@@ -31,34 +36,35 @@
           <small *ngIf="getControl('valor')?.errors?.['max']" class="error-message">
             O valor não pode ultrapassar 9.999.999.
           </small>
+          <small class="form-text text-muted">Informe o valor da transferência.</small>
         </div>
 
+        <!-- Data da Transferência -->
         <div class="form-group">
           <label for="dataTransferencia">Data de Transferência:</label>
-          <input max="2025-06-10"  id="dataTransferencia"  type="date" class="form-control" formControlName="dataTransferencia">
-
-          <!-- Exibir todos os erros de data -->
+          <input max="2025-06-10" id="dataTransferencia" type="date" class="form-control" formControlName="dataTransferencia">
+          <!-- Exibir erros -->
           <div *ngIf="getControl('dataTransferencia')?.errors as errors">
             <div *ngFor="let erro of errors | keyvalue">
               <small *ngIf="erro.key === 'dataInvalida'" class="error-message">
                 ❌ Data inválida, deve ser entre hoje e 50 dias à frente.
               </small>
-              <small *ngIf="getControl('dataTransferencia')?.value && getControl('dataTransferencia')?.value.length > 10" class="error-message">
-                ❌ Data inválida, deve ser entre hoje e 50 dias à frente.
-              </small>
-
             </div>
           </div>
+          <small class="form-text text-muted">Escolha a data de transferência (máximo 50 dias à frente).</small>
         </div>
       </div>
 
       <div class="button-container">
-        <button type="submit" class="btn btn-primary" [disabled]="transferenciaForm.invalid">
+        <!-- Botão Agendar Transferência -->
+        <button type="submit" class="btn btn-success btn-lg w-100 " [disabled]="transferenciaForm.invalid">
           <i class="fas fa-money-check-alt"></i> Agendar Transferência
         </button>
 
-        <button type="button" class="btn btn-warning" (click)="preencherFormulario()">
+        <!-- Botão Preencher Formulário -->
+        <button type="button" class="btn btn-warning btn-lg w-100" (click)="preencherFormulario()">
           <i class="fas fa-magic"></i> Preencher Formulário (Teste)
+          <small class="d-block text-muted">Preenche automaticamente os campos do formulário com valores de teste.</small>
         </button>
       </div>
     </form>
@@ -66,6 +72,7 @@
 
   <hr class="my-5">
 
+  <!-- Extrato de Transferências -->
   <div class="card shadow-sm p-4 rounded-4">
     <h4 class="mb-3">Extrato de Transferências</h4>
     <div class="table-responsive">
