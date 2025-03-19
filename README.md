@@ -60,9 +60,10 @@ O frontend se comunica com a API backend desenvolvida em **Java Spring Boot**. P
 
 - **Endpoint da API:** `http://localhost:8081/transferencias`
 - **Métodos disponíveis:**
+
   - `GET /transferencias` → Retorna a lista de transferências cadastradas.
   - `POST /transferencias` → Realiza um novo agendamento de transferência.
-
+  - `DELETE /transferencias` - Apaga transferências.
 ## 🚀 Como Testar
 
 Para garantir que o sistema esteja funcionando corretamente, siga estas etapas:
@@ -70,6 +71,7 @@ Para garantir que o sistema esteja funcionando corretamente, siga estas etapas:
 1. **Teste de cadastro de transferência**
   - Tente criar uma transferência com dados válidos e verifique se ela aparece no extrato.
   - Utilize o botão de preenchimento automático para facilitar os testes.
+  - O botão de deletar pode ser utilizado apagar para apagar uma transferência.
 
 2. **Teste de validações**
   - Insira **contas com menos de 10 dígitos** ou **caracteres não numéricos** e veja se o erro aparece.
