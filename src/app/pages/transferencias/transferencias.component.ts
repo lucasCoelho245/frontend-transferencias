@@ -1,34 +1,31 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {Component, OnInit, inject, ChangeDetectorRef} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { TransferenciaService } from '../../services/transferencia.service';
 import { Transferencia } from './transferencia.model';
-import { format } from 'date-fns';
-import { ValidacaoDataService } from '../../services/validacao-data';
-import {Observable} from 'rxjs';
+import { ValidacaoDataService } from '../../services/validacao-data.service';
+import {TransferenciaFactory} from './TransferenciaFactory';
 
 @Component({
   selector: 'app-transferencias',
   standalone: true,
   templateUrl: './transferencias.component.html',
   styleUrls: ['./transferencias.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule ],
 })
 export class TransferenciasComponent implements OnInit {
   public transferenciaForm!: FormGroup;
   public transferencias: Transferencia[] = [];
-
   private service = inject(TransferenciaService);
   private fb = inject(FormBuilder);
   private validacaoDataService = inject(ValidacaoDataService);
 
-  constructor() {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.inicializarFormulario();
     this.carregarTransferencias();
   }
-
   private inicializarFormulario(): void {
     this.transferenciaForm = this.fb.group({
       contaOrigem: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
@@ -54,7 +51,7 @@ export class TransferenciasComponent implements OnInit {
       return;
     }
 
-    const novaTransferencia = this.criarTransferencia();
+    const novaTransferencia = TransferenciaFactory.criarTransferencia(this.transferenciaForm);  // Usando o Factory
     this.service.criarTransferencia(novaTransferencia).subscribe({
       next: () => {
         this.carregarTransferencias();
@@ -62,29 +59,6 @@ export class TransferenciasComponent implements OnInit {
       },
       error: (err) => console.error('Erro ao criar transferência:', err),
     });
-  }
-
-  private criarTransferencia(): Transferencia {
-    const dataTransferencia = this.formatarDataTransferencia();
-    return {
-      id: this.gerarIdTransferencia(),
-      contaOrigem: this.transferenciaForm.get('contaOrigem')?.value,
-      contaDestino: this.transferenciaForm.get('contaDestino')?.value,
-      valor: this.transferenciaForm.get('valor')?.value,
-      taxa: 12.00,
-      dataTransferencia: format(dataTransferencia, 'yyyy-MM-dd'),
-      dataAgendamento: format(new Date(), 'yyyy-MM-dd'),
-    };
-  }
-
-  private formatarDataTransferencia(): Date {
-    const dataTransferencia = new Date(this.transferenciaForm.get('dataTransferencia')?.value);
-    dataTransferencia.setMinutes(dataTransferencia.getMinutes() + dataTransferencia.getTimezoneOffset());
-    return dataTransferencia;
-  }
-
-  private gerarIdTransferencia(): number {
-    return Math.floor(Math.random() * 1000);
   }
 
   public preencherFormulario(): void {
@@ -122,6 +96,4 @@ export class TransferenciasComponent implements OnInit {
       error: (err) => console.error('Erro ao deletar transferência:', err),
     });
   }
-
-
 }

@@ -35,16 +35,20 @@
 
         <div class="form-group">
           <label for="dataTransferencia">Data de Transferência:</label>
-          <input id="dataTransferencia" type="date" class="form-control" formControlName="dataTransferencia">
-          <small *ngIf="getControl('dataTransferencia')?.errors?.['dataPassada']" class="error-message">
-            ❌ Taxa não aplicável: {{ getControl('dataTransferencia')?.errors?.['dataPassada'] }}
-          </small>
-          <small *ngIf="getControl('dataTransferencia')?.errors?.['dataMuitoDistante']" class="error-message">
-            ❌ Taxa não aplicável: {{ getControl('dataTransferencia')?.errors?.['dataMuitoDistante'] }}
-          </small>
-          <small *ngIf="getControl('dataTransferencia')?.errors?.['anoInvalido']" class="error-message">
-            ❌ Taxa não aplicável: {{ getControl('dataTransferencia')?.errors?.['anoInvalido'] }}
-          </small>
+          <input max="2025-06-10"  id="dataTransferencia"  type="date" class="form-control" formControlName="dataTransferencia">
+
+          <!-- Exibir todos os erros de data -->
+          <div *ngIf="getControl('dataTransferencia')?.errors as errors">
+            <div *ngFor="let erro of errors | keyvalue">
+              <small *ngIf="erro.key === 'dataInvalida'" class="error-message">
+                ❌ Data inválida, deve ser entre hoje e 50 dias à frente.
+              </small>
+              <small *ngIf="getControl('dataTransferencia')?.value && getControl('dataTransferencia')?.value.length > 10" class="error-message">
+                ❌ Data inválida, deve ser entre hoje e 50 dias à frente.
+              </small>
+
+            </div>
+          </div>
         </div>
       </div>
 
@@ -63,7 +67,7 @@
   <hr class="my-5">
 
   <div class="card shadow-sm p-4 rounded-4">
-    <h4 class="mb-3">📜 Extrato de Transferências</h4>
+    <h4 class="mb-3">Extrato de Transferências</h4>
     <div class="table-responsive">
       <table class="table table-striped table-bordered rounded-4 overflow-hidden">
         <thead class="table-dark">

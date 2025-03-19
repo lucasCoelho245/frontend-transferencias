@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
+import {AbstractControl} from '@angular/forms';
+import {Injectable} from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
@@ -14,12 +14,15 @@ export class ValidacaoDataService {
     const maxDias = this.obterMaxDias(hoje, 50);
 
     const erros = this.validarDataTransferencia(dataSelecionada, hoje, maxDias);
-    return erros.length ? { dataInvalida: erros.join(' ') } : null;
+    if (erros.length) {
+      return { dataInvalida: 'Data inválida, deve ser entre hoje e 50 dias à frente.' };
+    }
+    return null;
   }
 
   private obterHojeSemHora(): Date {
     const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0); // Remover horas para evitar deslocamento
+    hoje.setHours(0, 0, 0, 0);
     return hoje;
   }
 
