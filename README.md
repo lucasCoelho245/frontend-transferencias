@@ -12,15 +12,6 @@ Este projeto é a interface web para o sistema de agendamento de transferências
 - **Date-fns** (para manipulação de datas)
 - **Angular Reactive Forms** (para validação de formulários)
 
-## 🌐 Versão Online
-
-Para facilitar a visualização e o uso da aplicação sem a necessidade de subir o projeto localmente, você pode acessar a versão online do frontend diretamente:
-
-- **Frontend (versão online)**: [https://frontend-transferencias.vercel.app](https://frontend-transferencias.vercel.app)
-
-Basta clicar no link acima para ver como a aplicação funciona.
-
-
 ## ⚙️ Instalação e Execução
 
 1. **Clone este repositório**
